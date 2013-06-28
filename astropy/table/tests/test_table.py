@@ -692,6 +692,14 @@ class TestRemove(SetupData):
         assert self.t.colnames == ['a', 'b', 'c']
         assert np.all(self.t['c'] == np.array([9]))
 
+    def test_remove_row_slice_2(self, table_types):
+        self._setup(table_types)
+        self.t.add_column(self.b)
+        self.t.add_column(self.c)
+        self.t.remove_rows(0, 4, 2)
+        assert self.t.colnames == ['a', 'b', 'c']
+        assert np.all(self.t['c'] == np.array([8]))
+
     def test_remove_row_list(self, table_types):
         self._setup(table_types)
         self.t.add_column(self.b)
