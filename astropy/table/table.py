@@ -1640,7 +1640,7 @@ class Table(object):
 
         Parameters
         ----------
-        index: int
+        index : int
             Index of row to remove
 
         Example
@@ -1672,14 +1672,22 @@ class Table(object):
             raise TypeError("Row index must be an integer")
         self.remove_rows(index)
 
-    def remove_rows(self, row_specifier):
+    def remove_rows(self, start_or_obj, stop=None, step=1):
         """
         Remove rows from the table.
 
+        The ``start_or_obj`` may be a slice object, int, or array of ints.
+        If the ``stop`` argument is specified, the arguments are treated as
+        a slice specification, with ``start_or_obj`` as the start integer.
+
         Parameters
         ----------
-        row_specifier: slice, int, or array of ints
+        start_or_obj : slice, int, or array of ints
             Specification for rows to remove
+        stop : int
+            stop for a slice specification for items to remove
+        step : int
+            step size for a slice specification
 
         Examples
         --------
@@ -1716,6 +1724,15 @@ class Table(object):
               2 0.2   y
               3 0.3   z
         """
+        if stop is not None:
+            if (not isinstance(stop, (int, long, np.integer))
+                    and not isinstance(start_or_obj, (int, long, np.integer))):
+                raise TypeError("Slice indices must be integers")
+            # make row_specifier as a slice
+            row_specifier = slice(start_or_obj, stop, step)
+        else:
+            row_specifier = start_or_obj
+
         table = np.delete(self._data, row_specifier, axis=0)
         self._data = table
 
